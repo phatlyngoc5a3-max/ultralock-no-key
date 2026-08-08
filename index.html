@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="vi">
 <head>
@@ -7,7 +6,7 @@
     <meta name="format-detection" content="telephone=no" />
     <title>ULTRALOCK</title>
     <style>
-        /* ===== Giao diện .txt ===== */
+        /* ===== Toàn bộ CSS từ giao diện .txt ===== */
         :root {
             color-scheme: dark;
             --bg: #050102;
@@ -1872,6 +1871,17 @@
                 min-width: 102px;
             }
         }
+
+        /* Âm thanh - hiệu ứng nhấp */
+        .click-sound-effect {
+            position: fixed;
+            top: -100px;
+            left: -100px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -2036,7 +2046,7 @@
                                 <div class="func-desc">Bám đầu thông minh - AI tự động căn chuẩn điểm ngắm vào đầu mục tiêu</div>
                             </div>
                             <div class="func-num">01</div>
-                            <label class="toggle"><input id="aimlockToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                            <label class="toggle"><input id="aimlockToggle" class="sound-toggle func-checkbox" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
                         </article>
                         <article class="func-card" id="fc-1">
                             <div class="func-icon-wrap">
@@ -2051,7 +2061,7 @@
                                 <div class="func-desc">Nhẹ tâm - Ổn định đường ngắm, giảm độ trôi khi kéo tâm</div>
                             </div>
                             <div class="func-num">02</div>
-                            <label class="toggle"><input id="stabilityAssistToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                            <label class="toggle"><input id="stabilityAssistToggle" class="sound-toggle func-checkbox" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
                         </article>
                         <article class="func-card" id="fc-2">
                             <div class="func-icon-wrap">
@@ -2069,7 +2079,7 @@
                                 <div class="func-desc">Ghim tâm - Giữ cố định điểm ngắm khi đứng yên tấn công</div>
                             </div>
                             <div class="func-num">03</div>
-                            <label class="toggle"><input id="aimHoldToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                            <label class="toggle"><input id="aimHoldToggle" class="sound-toggle func-checkbox" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
                         </article>
                         <article class="func-card" id="fc-3">
                             <div class="func-icon-wrap">
@@ -2084,7 +2094,7 @@
                                 <div class="func-desc">Đầm tâm - Khóa vị trí ngắm chắc chắn trong vùng mục tiêu</div>
                             </div>
                             <div class="func-num">04</div>
-                            <label class="toggle"><input id="aimLockdownToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                            <label class="toggle"><input id="aimLockdownToggle" class="sound-toggle func-checkbox" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
                         </article>
                         <article class="func-card" id="fc-4">
                             <div class="func-icon-wrap">
@@ -2099,7 +2109,7 @@
                                 <div class="func-desc">Nhạy - Tăng độ nhạy cảm ứng và phản hồi chạm nhanh hơn</div>
                             </div>
                             <div class="func-num">05</div>
-                            <label class="toggle"><input id="sensitivityBoostToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                            <label class="toggle"><input id="sensitivityBoostToggle" class="sound-toggle func-checkbox" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
                         </article>
                         <article class="func-card" id="fc-5">
                             <div class="func-icon-wrap">
@@ -2115,7 +2125,7 @@
                                 <div class="func-desc">Buff màn - Nâng cao chất lượng hình ảnh, tăng độ nét và tương phản</div>
                             </div>
                             <div class="func-num">06</div>
-                            <label class="toggle"><input id="screenBoostToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                            <label class="toggle"><input id="screenBoostToggle" class="sound-toggle func-checkbox" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
                         </article>
                         <article class="func-card" id="fc-6">
                             <div class="func-icon-wrap">
@@ -2132,7 +2142,7 @@
                                 <div class="func-desc">Fix lỗi đầu - Hiệu chỉnh sai số điểm ngắm đầu người chính xác</div>
                             </div>
                             <div class="func-num">07</div>
-                            <label class="toggle"><input id="headshotFixToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                            <label class="toggle"><input id="headshotFixToggle" class="sound-toggle func-checkbox" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
                         </article>
                         <article class="func-card" id="fc-7">
                             <div class="func-icon-wrap">
@@ -2148,7 +2158,7 @@
                                 <div class="func-desc">Fix lệch đạn - Căn chỉnh quỹ đạo đạn khớp với điểm ngắm</div>
                             </div>
                             <div class="func-num">08</div>
-                            <label class="toggle"><input id="bulletAlignToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                            <label class="toggle"><input id="bulletAlignToggle" class="sound-toggle func-checkbox" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
                         </article>
                         <article class="func-card" id="fc-8">
                             <div class="func-icon-wrap">
@@ -2165,7 +2175,7 @@
                                 <div class="func-desc">Fix rung - Khử rung camera và ổn định màn hình khi di chuyển</div>
                             </div>
                             <div class="func-num">09</div>
-                            <label class="toggle"><input id="shakeFixToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                            <label class="toggle"><input id="shakeFixToggle" class="sound-toggle func-checkbox" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
                         </article>
                     </div>
                 </article>
@@ -2431,11 +2441,136 @@
 
     <!-- ===== JavaScript ===== -->
     <script>
-        // ===== app.js =====
         (function() {
             "use strict";
 
-            // Navigation
+            // ===== HỆ THỐNG ÂM THANH =====
+            class SoundManager {
+                constructor() {
+                    this.enabled = true;
+                    this.sounds = {};
+                    this.ctx = null;
+                    this.initAudio();
+                }
+
+                initAudio() {
+                    try {
+                        this.ctx = new(window.AudioContext || window.webkitAudioContext)();
+                    } catch (e) {
+                        console.warn("Web Audio API not supported");
+                    }
+                }
+
+                play(type) {
+                    if (!this.enabled || !this.ctx) return;
+                    try {
+                        // Tạo âm thanh bằng oscillator
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+
+                        // Cấu hình âm thanh theo loại
+                        switch (type) {
+                            case 'click':
+                                osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+                                osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.06);
+                                gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+                                osc.start(this.ctx.currentTime);
+                                osc.stop(this.ctx.currentTime + 0.08);
+                                break;
+
+                            case 'toggle-on':
+                                osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+                                osc.frequency.exponentialRampToValueAtTime(900, this.ctx.currentTime + 0.08);
+                                gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+                                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
+                                osc.start(this.ctx.currentTime);
+                                osc.stop(this.ctx.currentTime + 0.1);
+                                break;
+
+                            case 'toggle-off':
+                                osc.frequency.setValueAtTime(900, this.ctx.currentTime);
+                                osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.08);
+                                gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+                                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
+                                osc.start(this.ctx.currentTime);
+                                osc.stop(this.ctx.currentTime + 0.1);
+                                break;
+
+                            case 'booster':
+                                osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+                                osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.15);
+                                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
+                                osc.start(this.ctx.currentTime);
+                                osc.stop(this.ctx.currentTime + 0.2);
+                                break;
+
+                            case 'error':
+                                osc.type = 'sawtooth';
+                                osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+                                osc.frequency.exponentialRampToValueAtTime(200, this.ctx.currentTime + 0.2);
+                                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+                                osc.start(this.ctx.currentTime);
+                                osc.stop(this.ctx.currentTime + 0.25);
+                                break;
+
+                            case 'success':
+                                osc.frequency.setValueAtTime(500, this.ctx.currentTime);
+                                osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.06);
+                                osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.14);
+                                gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
+                                osc.start(this.ctx.currentTime);
+                                osc.stop(this.ctx.currentTime + 0.2);
+                                break;
+
+                            case 'nav':
+                                osc.frequency.setValueAtTime(700, this.ctx.currentTime);
+                                osc.frequency.exponentialRampToValueAtTime(500, this.ctx.currentTime + 0.05);
+                                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
+                                osc.start(this.ctx.currentTime);
+                                osc.stop(this.ctx.currentTime + 0.06);
+                                break;
+
+                            default:
+                                osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+                                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+                                osc.start(this.ctx.currentTime);
+                                osc.stop(this.ctx.currentTime + 0.05);
+                        }
+                    } catch (e) {
+                        // Bỏ qua lỗi âm thanh
+                    }
+                }
+
+                toggle() {
+                    this.enabled = !this.enabled;
+                    if (this.enabled) {
+                        this.play('click');
+                    }
+                    return this.enabled;
+                }
+
+                setEnabled(state) {
+                    this.enabled = state;
+                }
+            }
+
+            // Khởi tạo sound manager toàn cục
+            const sound = new SoundManager();
+
+            // ===== Hàm phát âm thanh tiện lợi =====
+            function playSound(type) {
+                sound.play(type);
+            }
+
+            // ===== NAVIGATION =====
             const sections = {
                 home: document.getElementById("homeSection"),
                 premium: document.getElementById("premiumSection"),
@@ -2458,6 +2593,8 @@
                     const target = btn.getAttribute("data-view-target");
                     btn.classList.toggle("is-active", target === sectionId);
                 });
+                // Phát âm thanh khi chuyển tab
+                playSound('nav');
             }
 
             bottomButtons.forEach((btn) => {
@@ -2469,34 +2606,40 @@
                 });
             });
 
-            // Function toggles + limit modal
-            const funcToggles = document.querySelectorAll(".func-card .toggle input");
+            // ===== FUNCTION TOGGLES + LIMIT MODAL =====
+            const funcCheckboxes = document.querySelectorAll(".func-checkbox");
             let activeFuncCount = 0;
 
             function updateFuncCount() {
-                activeFuncCount = document.querySelectorAll('.func-card .toggle input:checked').length;
+                activeFuncCount = document.querySelectorAll('.func-checkbox:checked').length;
             }
 
-            funcToggles.forEach((toggle) => {
-                toggle.addEventListener("change", function() {
+            funcCheckboxes.forEach((checkbox) => {
+                checkbox.addEventListener("change", function() {
                     const card = this.closest(".func-card");
-                    if (this.checked) {
+                    const isChecked = this.checked;
+
+                    if (isChecked) {
+                        // Kiểm tra giới hạn
                         if (activeFuncCount >= 9) {
                             this.checked = false;
+                            playSound('error');
                             modalBackdrop.classList.add("is-open");
                             limitModal.classList.add("is-open");
                             return;
                         }
                         card.classList.add("is-on");
                         activeFuncCount++;
+                        playSound('toggle-on');
                     } else {
                         card.classList.remove("is-on");
                         activeFuncCount--;
+                        playSound('toggle-off');
                     }
                 });
             });
 
-            // Close modal
+            // ===== CLOSE MODAL =====
             function closeModal() {
                 modalBackdrop.classList.remove("is-open");
                 limitModal.classList.remove("is-open");
@@ -2506,7 +2649,7 @@
                 if (e.key === "Escape") closeModal();
             });
 
-            // Booster switch
+            // ===== BOOSTER SWITCH =====
             const boosterPills = document.querySelectorAll(".booster-pill");
             const boosterPanels = document.querySelectorAll(".booster-panel");
 
@@ -2518,10 +2661,11 @@
                     boosterPanels.forEach((panel) => {
                         panel.classList.toggle("is-active", panel.getAttribute("data-booster-panel") === target);
                     });
+                    playSound('click');
                 });
             });
 
-            // Sliders: update outputs and preview
+            // ===== SLIDERS =====
             const sliders = document.querySelectorAll(".tune-slider");
             sliders.forEach((slider) => {
                 const output = document.querySelector(`output[for="${slider.id}"]`);
@@ -2549,30 +2693,35 @@
                             `.booster-preview[data-preview-profile="${profile}"] .preview-score`
                         );
                         if (previewDial) {
-                            const total = Array.from(
-                                    document.querySelectorAll(
-                                        `.booster-preview[data-preview-profile="${profile}"] .tune-slider`)
-                                )
-                                .reduce((sum, s) => sum + parseInt(s.value || 0), 0);
-                            const avg = Math.min(100, Math.round(total / 5));
+                            const slidersInProfile = document.querySelectorAll(
+                                `.booster-preview[data-preview-profile="${profile}"] .tune-slider`
+                            );
+                            let total = 0;
+                            slidersInProfile.forEach(s => total += parseInt(s.value || 0));
+                            const avg = Math.min(100, Math.round(total / slidersInProfile.length));
                             previewDial.style.setProperty("--dial", avg);
                             if (scoreSpan) scoreSpan.textContent = avg + "%";
                         }
                     };
-                    slider.addEventListener("input", updateOutput);
+                    slider.addEventListener("input", function() {
+                        updateOutput();
+                        playSound('click');
+                    });
                     updateOutput();
                 }
             });
 
-            // Booster Launch buttons
+            // ===== BOOSTER LAUNCH BUTTONS =====
             document.getElementById("launchFF")?.addEventListener("click", function() {
-                showToast("Đang kích hoạt BOOSTER cho FREE FIRE...");
+                playSound('booster');
+                showToast("🚀 Đang kích hoạt BOOSTER cho FREE FIRE...");
             });
             document.getElementById("launchFFM")?.addEventListener("click", function() {
-                showToast("Đang kích hoạt BOOSTER cho FREE FIRE MAX...");
+                playSound('booster');
+                showToast("🚀 Đang kích hoạt BOOSTER cho FREE FIRE MAX...");
             });
 
-            // Toast
+            // ===== TOAST =====
             function showToast(msg) {
                 let toast = document.querySelector(".boost-toast");
                 if (!toast) {
@@ -2586,33 +2735,26 @@
                 toast._hideTimer = setTimeout(() => toast.classList.remove("show"), 2000);
             }
 
-            // ===== Monitor =====
+            // ===== MONITOR =====
             const cpuCanvas = document.getElementById("cpuCanvas");
             const ramCanvas = document.getElementById("ramCanvas");
             const ctxCpu = cpuCanvas?.getContext("2d");
             const ctxRam = ramCanvas?.getContext("2d");
 
-            // Simulate data
             let cpuData = new Array(60).fill(0);
             let ramData = new Array(60).fill(0);
-            let frameTimes = [];
 
             function updateMonitor() {
-                // Simulate CPU (0-100%)
                 const cpu = Math.min(100, Math.max(5, Math.round(Math.random() * 30 + 15 + Math.sin(Date.now() / 1000) * 10)));
                 document.getElementById("mCpu").textContent = cpu;
                 cpuData.push(cpu);
                 if (cpuData.length > 60) cpuData.shift();
 
-                // Simulate FPS
                 const fps = Math.round(60 + Math.random() * 40);
                 document.getElementById("mFps").textContent = fps;
                 const frame = 1000 / fps;
                 document.getElementById("mFrame").textContent = frame.toFixed(1);
-                frameTimes.push(frame);
-                if (frameTimes.length > 60) frameTimes.shift();
 
-                // Simulate RAM
                 const ram = (Math.random() * 2 + 1.2).toFixed(1);
                 document.getElementById("mRam").textContent = ram + " MB";
                 ramData.push(parseFloat(ram));
@@ -2637,7 +2779,6 @@
                     i === 0 ? ctxCpu.moveTo(x, y) : ctxCpu.lineTo(x, y);
                 });
                 ctxCpu.stroke();
-                // Fill under
                 ctxCpu.lineTo(w, h);
                 ctxCpu.lineTo(0, h);
                 ctxCpu.closePath();
@@ -2674,10 +2815,9 @@
                 ctxRam.fill();
             }
 
-            // Simulate updates
             setInterval(updateMonitor, 500);
 
-            // Logs/Errors counts
+            // ===== CONSOLE =====
             let logCount = 0,
                 errCount = 0;
             const consoleView = document.getElementById("consoleView");
@@ -2697,9 +2837,10 @@
                     logCount++;
                     mLogs.textContent = logCount;
                 }
+                if (type === "error") playSound('error');
+                else playSound('click');
             }
 
-            // Console command
             document.getElementById("btnExec")?.addEventListener("click", function() {
                 const cmd = document.getElementById("cmd");
                 const code = cmd.value.trim();
@@ -2708,6 +2849,7 @@
                     const result = eval(code);
                     addLog("> " + code);
                     addLog("← " + String(result));
+                    playSound('success');
                 } catch (e) {
                     addLog("> " + code, "error");
                     addLog("✖ " + e.message, "error");
@@ -2718,96 +2860,67 @@
                 if (e.key === "Enter") document.getElementById("btnExec").click();
             });
 
-            // Clear console
             document.getElementById("btnClearConsole")?.addEventListener("click", function() {
                 consoleView.innerHTML = "";
                 logCount = 0;
                 errCount = 0;
                 mLogs.textContent = "0";
                 mErrs.textContent = "0";
+                playSound('click');
             });
 
-            // Other buttons
-            document.getElementById("btnCleanRam")?.addEventListener("click", function() {
-                addLog("🧹 Dọn RAM: Đã giải phóng bộ nhớ tạm.", "warn");
-            });
-            document.getElementById("btnCleanCpu")?.addEventListener("click", function() {
-                addLog("🧹 Dọn CPU: Đã tối ưu tiến trình nền.", "warn");
-            });
-            document.getElementById("btnOptRam")?.addEventListener("click", function() {
-                addLog("⚡ Tối ưu RAM: Đã giảm mức sử dụng.", "warn");
-            });
-            document.getElementById("btnOptCpu")?.addEventListener("click", function() {
-                addLog("⚡ Tối ưu CPU: Đã tăng hiệu suất xử lý.", "warn");
-            });
-            document.getElementById("btnOptFps")?.addEventListener("click", function() {
-                addLog("⚡ Tối ưu FPS: Đã tăng tốc khung hình.", "warn");
+            // ===== CONTROL BUTTONS =====
+            const controlButtons = ['btnCleanRam', 'btnCleanCpu', 'btnOptRam', 'btnOptCpu', 'btnOptFps'];
+            controlButtons.forEach(id => {
+                document.getElementById(id)?.addEventListener("click", function() {
+                    const label = this.textContent.trim();
+                    addLog("⚡ " + label + ": Đã thực thi.", "warn");
+                });
             });
 
-            // Lock button
             let locked = false;
             document.getElementById("btnLock")?.addEventListener("click", function() {
                 locked = !locked;
                 this.textContent = locked ? "Lock 120 FPS : ON" : "UnLock 120 FPS : OFF";
                 this.classList.toggle("toggleOn", locked);
                 addLog(locked ? "🔒 Đã khóa 120 FPS." : "🔓 Đã mở khóa 120 FPS.", "warn");
+                playSound(locked ? 'toggle-on' : 'toggle-off');
             });
 
-            // Settings buttons
+            // ===== SETTINGS =====
             document.getElementById("settings-reset-btn")?.addEventListener("click", function() {
                 if (confirm("Bạn có chắc muốn đặt lại tất cả cấu hình?")) {
                     addLog("🔄 Đã đặt lại cấu hình hệ thống.", "warn");
+                    playSound('success');
                 }
             });
             document.getElementById("settings-logout-btn")?.addEventListener("click", function() {
                 if (confirm("Bạn có chắc muốn đăng xuất?")) {
                     addLog("👋 Đã đăng xuất khỏi hệ thống.", "warn");
+                    playSound('click');
                 }
             });
 
-            // Sound toggle
+            // ===== SOUND TOGGLE =====
             document.getElementById("settings-sound-toggle")?.addEventListener("change", function() {
-                addLog(this.checked ? "🔊 Âm thanh đã bật." : "🔇 Âm thanh đã tắt.", "warn");
-            });
-            document.getElementById("settings-notification-toggle")?.addEventListener("change", function() {
-                addLog(this.checked ? "🔔 Thông báo đã bật." : "🔕 Thông báo đã tắt.", "warn");
+                const enabled = this.checked;
+                sound.setEnabled(enabled);
+                addLog(enabled ? "🔊 Âm thanh đã bật." : "🔇 Âm thanh đã tắt.", "warn");
+                if (enabled) playSound('click');
             });
 
-            // Init
+            document.getElementById("settings-notification-toggle")?.addEventListener("change", function() {
+                addLog(this.checked ? "🔔 Thông báo đã bật." : "🔕 Thông báo đã tắt.", "warn");
+                playSound('click');
+            });
+
+            // ===== INIT =====
             updateMonitor();
             showSection("home");
 
-            // Keyboard shortcut: Escape to close modal
-            document.addEventListener("keydown", function(e) {
-                if (e.key === "Escape") closeModal();
-            });
-
-            console.log("ULTRALOCK app loaded.");
+            // Đánh dấu đã tải
+            console.log("ULTRALOCK app loaded with sound effects.");
         })();
-
-        // ===== key.js =====
-        // (No code provided)
-
-        // ===== code.js =====
-        // (No code provided)
-
-        // ===== code1.js =====
-        // (No code provided)
-
-        // ===== code2.js =====
-        // (No code provided)
-
-        // ===== code3.js =====
-        // (No code provided)
-
-        // ===== code4.js =====
-        // (No code provided)
-
-        // ===== code5.js =====
-        // (No code provided)
-
-        // ===== code6.js =====
-        // (No code provided)
     </script>
 </body>
 </html>
