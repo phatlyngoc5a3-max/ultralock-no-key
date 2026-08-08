@@ -1,0 +1,2813 @@
+
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>ULTRALOCK</title>
+    <style>
+        /* ===== Giao diện .txt ===== */
+        :root {
+            color-scheme: dark;
+            --bg: #050102;
+            --bg-soft: #0b0204;
+            --surface: rgba(24, 10, 13, 0.84);
+            --surface-strong: rgba(31, 11, 15, 0.94);
+            --surface-soft: rgba(255, 255, 255, 0.04);
+            --line: rgba(255, 92, 110, 0.14);
+            --line-strong: rgba(255, 108, 124, 0.3);
+            --accent: #ff3b52;
+            --accent-soft: #ff9aa5;
+            --accent-deep: #c90f2b;
+            --text: #fff4f5;
+            --muted: #c4a8ad;
+            --muted-strong: #ddc0c4;
+            --success: #96ffd5;
+            --warning: #ffd78f;
+            --danger: #ff8b98;
+            --font-mono: "Consolas", "Bahnschrift", "Segoe UI", monospace;
+            --radius-xl: 26px;
+            --radius-lg: 22px;
+            --radius-md: 18px;
+            --radius-sm: 14px;
+            --shadow-lg: 0 24px 70px rgba(0, 0, 0, 0.48);
+            --shadow-md: 0 16px 34px rgba(0, 0, 0, 0.28);
+            --transition: 220ms ease;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
+            background: #030102;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            touch-action: manipulation;
+        }
+
+        body {
+            min-height: 100dvh;
+            margin: 0;
+            font-family: "Bahnschrift", "Segoe UI", sans-serif;
+            color: var(--text);
+            background: radial-gradient(circle at top, rgba(255, 42, 66, 0.16), transparent 34%),
+                radial-gradient(circle at 80% 16%, rgba(255, 82, 104, 0.12), transparent 24%),
+                linear-gradient(180deg, #050102 0%, #080203 38%, #050102 100%);
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: auto;
+            border-radius: 999px;
+            pointer-events: none;
+            filter: blur(40px);
+            opacity: 0.7;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 180px;
+            height: 180px;
+            top: -40px;
+            left: -54px;
+            background: rgba(255, 59, 82, 0.22);
+        }
+
+        body::after {
+            width: 190px;
+            height: 190px;
+            right: -70px;
+            bottom: 10%;
+            background: rgba(255, 138, 151, 0.16);
+        }
+
+        a,
+        button,
+        input,
+        textarea {
+            font: inherit;
+            color: inherit;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button {
+            padding: 0;
+            border: 0;
+            background: none;
+            cursor: pointer;
+        }
+
+        img,
+        svg {
+            display: block;
+            max-width: 100%;
+        }
+
+        input[type="text"],
+        textarea {
+            font-size: 16px;
+        }
+
+        .app-shell {
+            position: relative;
+            z-index: 1;
+            width: min(100%, 430px);
+            min-height: 100dvh;
+            padding: 14px 14px calc(98px + env(safe-area-inset-bottom));
+            display: grid;
+            align-content: start;
+            gap: 14px;
+        }
+
+        .glass-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)), var(--surface);
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(18px) saturate(145%);
+            -webkit-backdrop-filter: blur(18px) saturate(145%);
+        }
+
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(140deg, rgba(255, 255, 255, 0.08), transparent 32%),
+                radial-gradient(circle at top right, rgba(255, 59, 82, 0.12), transparent 30%);
+        }
+
+        .app-header {
+            padding: 16px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .brand-copy {
+            min-width: 0;
+        }
+
+        .brand-overline {
+            margin: 0 0 6px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--accent-soft);
+        }
+
+        .brand-title {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            text-shadow: 0 0 18px rgba(255, 59, 82, 0.2);
+        }
+
+        .brand-subtitle {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .header-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 138, 151, 0.2);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--muted-strong);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .header-status::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--accent-soft), var(--accent));
+            box-shadow: 0 0 12px rgba(255, 59, 82, 0.8);
+        }
+
+        .header-meta {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .meta-card {
+            position: relative;
+            padding: 12px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 108, 124, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+
+        .meta-label {
+            margin: 0 0 5px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .meta-value {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .main-stack,
+        .page-section {
+            display: grid;
+            gap: 14px;
+        }
+
+        .page-section {
+            animation: section-enter 260ms ease;
+        }
+
+        .page-section[hidden] {
+            display: none !important;
+        }
+
+        .profile-card,
+        .section-card,
+        .monitor-card {
+            padding: 14px;
+        }
+
+        #homeSection>.home-hero-card,
+        #homeSection>.home-section-title:first-of-type,
+        #homeSection>.home-section-title:first-of-type+.home-panel,
+        #homeSection>.home-intro-card {
+            display: none;
+        }
+
+        #homeSection>.profile-card {
+            order: 1;
+        }
+
+        #homeSection>.home-section-title:nth-of-type(2),
+        #homeSection>.home-section-title:nth-of-type(2)+.home-panel {
+            order: 2;
+        }
+
+        .home-hero-card,
+        .home-panel,
+        .home-section-title {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+        }
+
+        .home-hero-card {
+            position: relative;
+            padding: 26px 18px 18px;
+            display: grid;
+            gap: 16px;
+            text-align: center;
+        }
+
+        .home-hero-card::after {
+            content: "";
+            position: absolute;
+            right: -30px;
+            top: -34px;
+            width: 136px;
+            height: 136px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 59, 82, 0.3) 0%, rgba(255, 59, 82, 0) 74%);
+            filter: blur(10px);
+            pointer-events: none;
+        }
+
+        .home-hero-kicker {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            color: rgba(255, 244, 245, 0.38);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        .home-badge-row {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .home-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 0 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .home-badge.is-admin {
+            color: #6ab1ff;
+            background: rgba(24, 88, 182, 0.18);
+        }
+
+        .home-badge.is-dev {
+            color: #ffb85b;
+            background: rgba(170, 92, 16, 0.2);
+        }
+
+        .home-badge.is-verified {
+            color: #79ffb9;
+            background: rgba(32, 112, 68, 0.2);
+        }
+
+        .home-badge.is-ff {
+            color: #ff7789;
+            background: rgba(162, 32, 52, 0.2);
+        }
+
+        .home-section-title {
+            margin: 2px 8px -2px;
+            color: rgba(255, 244, 245, 0.38);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .home-panel {
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .home-contact-row,
+        .home-info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 18px;
+        }
+
+        .home-contact-row,
+        .home-info-row {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .home-panel>:last-child {
+            border-bottom: none;
+        }
+
+        .home-contact-row {
+            transition: background var(--transition), transform var(--transition);
+        }
+
+        .home-contact-row:active {
+            transform: scale(0.992);
+        }
+
+        .home-contact-row:hover {
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .home-contact-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .home-icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 56px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+        }
+
+        .home-icon-box.is-soft {
+            background: radial-gradient(circle at top left, rgba(53, 116, 224, 0.26), rgba(53, 116, 224, 0.08));
+            color: #6aaeff;
+        }
+
+        .home-icon-box.is-bright {
+            background: radial-gradient(circle at top left, rgba(255, 78, 101, 0.28), rgba(255, 78, 101, 0.08));
+            color: #ff7184;
+        }
+
+        .home-icon-box.is-deep {
+            background: radial-gradient(circle at top left, rgba(137, 56, 215, 0.24), rgba(137, 56, 215, 0.08));
+            color: #cf99ff;
+        }
+
+        .home-icon-box.is-muted {
+            background: radial-gradient(circle at top left, rgba(255, 152, 92, 0.22), rgba(255, 152, 92, 0.08));
+            color: #ffbf7c;
+        }
+
+        .home-contact-copy {
+            min-width: 0;
+        }
+
+        .home-contact-name {
+            margin: 0 0 4px;
+            color: var(--text);
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.05;
+        }
+
+        .home-contact-sub {
+            color: rgba(255, 244, 245, 0.24);
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 176px;
+        }
+
+        .home-contact-link {
+            margin-left: 12px;
+            flex-shrink: 0;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .home-contact-link.is-bright {
+            color: #5fafff;
+        }
+
+        .home-contact-link.is-soft {
+            color: #86c3ff;
+        }
+
+        .home-contact-link.is-rose {
+            color: #ff6b89;
+        }
+
+        .home-info-label {
+            color: rgba(255, 244, 245, 0.92);
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        .home-info-value {
+            color: rgba(255, 244, 245, 0.32);
+            font-size: 16px;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .home-info-value.is-soft {
+            color: #ffa4af;
+        }
+
+        .home-info-value.is-warm {
+            color: #ffbd75;
+        }
+
+        .home-info-value.is-bright {
+            color: #63b0ff;
+        }
+
+        .home-intro-card {
+            position: relative;
+            padding: 18px 16px;
+            display: grid;
+            gap: 12px;
+            justify-items: center;
+            text-align: center;
+        }
+
+        .home-intro-card::after {
+            content: "";
+            position: absolute;
+            right: -34px;
+            top: -26px;
+            width: 126px;
+            height: 126px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 59, 82, 0.28) 0%, rgba(255, 59, 82, 0) 72%);
+            filter: blur(10px);
+            pointer-events: none;
+            opacity: 0.85;
+        }
+
+        .home-intro-kicker {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--accent-soft);
+        }
+
+        .home-intro-title {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            font-size: 25px;
+            font-weight: 900;
+            line-height: 1.08;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+
+        .home-intro-copy {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            font-size: 12.5px;
+            line-height: 1.68;
+            color: var(--muted-strong);
+        }
+
+        .home-chip-row {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .home-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 30px;
+            padding: 0 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 108, 124, 0.16);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)), rgba(255, 255, 255, 0.03);
+            color: var(--muted-strong);
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .home-intro-foot {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 108, 124, 0.12);
+            font-size: 11px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .profile-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .profile-avatar {
+            width: 62px;
+            height: 62px;
+            flex: 0 0 62px;
+            padding: 3px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255, 138, 151, 0.9), rgba(255, 59, 82, 0.2));
+            box-shadow: 0 0 18px rgba(255, 59, 82, 0.16);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 17px;
+        }
+
+        .profile-body h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .profile-body p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .profile-links {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            align-items: stretch;
+        }
+
+        .profile-btn,
+        .action-btn,
+        .booster-launch,
+        .consoleInput button,
+        .controls button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 14px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 108, 124, 0.16);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)), rgba(10, 4, 6, 0.92);
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            box-shadow: var(--shadow-md);
+            transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition),
+                background var(--transition);
+        }
+
+        .profile-btn:active,
+        .action-btn:active,
+        .booster-launch:active,
+        .consoleInput button:active,
+        .controls button:active,
+        .portal-card:active,
+        .booster-pill:active,
+        .bottom-item:active {
+            transform: scale(0.98);
+        }
+
+        .profile-btn:hover,
+        .action-btn:hover,
+        .booster-launch:hover,
+        .consoleInput button:hover,
+        .controls button:hover {
+            border-color: var(--line-strong);
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.34), 0 0 18px rgba(255, 59, 82, 0.14);
+        }
+
+        .home-rail {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .portal-card {
+            min-height: 90px;
+            padding: 12px;
+            display: grid;
+            align-content: space-between;
+            gap: 8px;
+            text-align: left;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 108, 124, 0.14);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.016)), rgba(10, 6, 8, 0.94);
+            box-shadow: var(--shadow-md);
+            transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .portal-card:hover {
+            transform: translateY(-1px);
+            border-color: var(--line-strong);
+            box-shadow: 0 18px 34px rgba(0, 0, 0, 0.36), 0 0 20px rgba(255, 59, 82, 0.12);
+        }
+
+        .portal-tag {
+            display: inline-flex;
+            width: fit-content;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 9px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 138, 151, 0.18);
+            background: rgba(255, 59, 82, 0.08);
+            color: var(--accent-soft);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .portal-card strong {
+            font-size: 13px;
+            line-height: 1.3;
+        }
+
+        .section-head,
+        .monitor-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .section-eyebrow {
+            margin: 0 0 6px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent-soft);
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+
+        .section-note {
+            margin: 6px 0 0;
+            font-size: 12px;
+            line-height: 1.45;
+            color: var(--muted);
+        }
+
+        #premiumSection .section-card {
+            padding: 0;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            overflow: visible;
+        }
+
+        #premiumSection .section-card::before {
+            display: none;
+        }
+
+        #premiumSection .section-head {
+            margin: 0 2px 16px;
+        }
+
+        #premiumSection .section-eyebrow {
+            display: none;
+        }
+
+        #premiumSection .section-title {
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 2.4px;
+            color: var(--accent-soft);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .func-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .func-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 108, 124, 0.12);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)), rgba(12, 5, 7, 0.92);
+            overflow: hidden;
+            transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition),
+                background var(--transition);
+        }
+
+        .func-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(255, 59, 82, 0.12) 0%, transparent 56%);
+            opacity: 0;
+            transition: opacity var(--transition);
+            pointer-events: none;
+        }
+
+        .func-card::after {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            border: 1px solid rgba(255, 124, 136, 0);
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 0 0 rgba(255, 59, 82, 0), 0 0 0 rgba(255, 59, 82, 0);
+            transition: opacity var(--transition), border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .func-card.on,
+        .func-card.is-on {
+            border-color: rgba(255, 124, 136, 0.78);
+            box-shadow: 0 0 0 1px rgba(255, 124, 136, 0.3), 0 0 18px rgba(255, 59, 82, 0.28),
+                0 0 34px rgba(255, 59, 82, 0.18), inset 0 0 0 1px rgba(255, 176, 185, 0.08);
+        }
+
+        .func-card.on::before,
+        .func-card.is-on::before {
+            opacity: 1;
+        }
+
+        .func-card.on::after,
+        .func-card.is-on::after {
+            opacity: 1;
+            border-color: rgba(255, 124, 136, 0.68);
+            box-shadow: 0 0 16px rgba(255, 59, 82, 0.32), 0 0 32px rgba(255, 59, 82, 0.2);
+        }
+
+        .func-icon-wrap {
+            width: 40px;
+            height: 40px;
+            flex: 0 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 108, 124, 0.14);
+            background: rgba(255, 255, 255, 0.035);
+            transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+        }
+
+        .func-card.on .func-icon-wrap,
+        .func-card.is-on .func-icon-wrap {
+            border-color: rgba(255, 138, 151, 0.42);
+            background: rgba(255, 59, 82, 0.16);
+            box-shadow: 0 0 14px rgba(255, 59, 82, 0.22), 0 0 24px rgba(255, 59, 82, 0.12);
+        }
+
+        .func-icon-wrap svg {
+            width: 20px;
+            height: 20px;
+            color: var(--accent);
+            stroke: var(--accent);
+        }
+
+        .func-info {
+            flex: 1;
+            min-width: 0;
+            padding-right: 48px;
+        }
+
+        .func-name {
+            margin: 0 0 4px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text);
+            font-family: var(--font-mono);
+        }
+
+        .func-desc {
+            margin: 0;
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--muted);
+        }
+
+        .func-num {
+            position: absolute;
+            right: 72px;
+            top: 50%;
+            transform: translateY(-50%);
+            min-width: 30px;
+            height: 18px;
+            padding: 0 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(199, 192, 217, 0.72);
+            font-size: 8.5px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            font-family: var(--font-mono);
+            transition: var(--transition);
+        }
+
+        .func-card.on .func-num,
+        .func-card.is-on .func-num {
+            color: var(--accent-soft);
+            border-color: rgba(255, 138, 151, 0.14);
+            background: rgba(255, 59, 82, 0.08);
+        }
+
+        .toggle {
+            --toggle-size: 16px;
+            --toggle-pad: 4px;
+            --toggle-travel: 22px;
+            position: relative;
+            width: 46px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 46px;
+            cursor: pointer;
+            touch-action: pan-y;
+        }
+
+        .toggle input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+
+        .toggle-track {
+            position: absolute;
+            inset: 0;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 108, 124, 0.14);
+            background: rgba(255, 255, 255, 0.055);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+            transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+        }
+
+        .toggle-thumb {
+            position: absolute;
+            top: 50%;
+            left: var(--toggle-pad);
+            width: var(--toggle-size);
+            height: var(--toggle-size);
+            border-radius: 999px;
+            background: linear-gradient(180deg, #c6c9d8, #989eb5);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+            transform: translate(0, -50%);
+            transition: transform var(--transition), background var(--transition);
+        }
+
+        .toggle input:checked~.toggle-track {
+            background: linear-gradient(135deg, rgba(255, 59, 82, 0.94), rgba(255, 138, 151, 0.38));
+            border-color: rgba(255, 138, 151, 0.42);
+            box-shadow: 0 0 10px rgba(255, 59, 82, 0.28), inset 0 1px 2px rgba(255, 255, 255, 0.06);
+        }
+
+        .toggle input:checked~.toggle-thumb {
+            background: linear-gradient(180deg, #ffffff, #f0f0f8);
+            transform: translate(var(--toggle-travel), -50%);
+            box-shadow: 0 0 10px rgba(255, 59, 82, 0.22), 0 2px 6px rgba(0, 0, 0, 0.45);
+        }
+
+        .toggle:hover .toggle-track {
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .setup-stack {
+            display: grid;
+            gap: 14px;
+        }
+
+        .about-card {
+            position: relative;
+            overflow: hidden;
+            padding: 20px 18px;
+            text-align: center;
+        }
+
+        .about-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), var(--accent-soft), transparent);
+        }
+
+        .about-logo-text {
+            margin: 0 0 4px;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: var(--text);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            text-shadow: 0 0 18px rgba(255, 59, 82, 0.22);
+        }
+
+        .about-version {
+            margin: 0 0 10px;
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--muted);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .about-desc {
+            margin: 0 0 14px;
+            font-size: 11px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .about-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .about-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 138, 151, 0.14);
+            background: rgba(255, 59, 82, 0.08);
+            color: var(--accent-soft);
+            font-size: 8px;
+            letter-spacing: 1.5px;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .settings-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        .settings-group-title {
+            margin: 0 0 2px;
+            padding-left: 2px;
+            font-size: 9.5px;
+            letter-spacing: 2.5px;
+            color: var(--accent-soft);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 0;
+            padding: 14px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 108, 124, 0.12);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)), rgba(12, 5, 7, 0.92);
+            transition: border-color var(--transition), background var(--transition);
+        }
+
+        .setting-row:hover {
+            border-color: rgba(255, 138, 151, 0.22);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018)), rgba(13, 9, 22, 0.96);
+        }
+
+        .setting-row-icon {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 108, 124, 0.14);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .setting-row-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--accent);
+        }
+
+        .setting-row-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .setting-row-name {
+            margin: 0 0 2px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            font-family: var(--font-mono);
+            letter-spacing: 0.5px;
+        }
+
+        .setting-row-desc {
+            margin: 0;
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .setting-row-ctrl {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            min-height: 28px;
+        }
+
+        .setting-select {
+            min-width: 118px;
+            padding: 6px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 108, 124, 0.14);
+            outline: none;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--muted-strong);
+            font-size: 10px;
+            font-family: var(--font-mono);
+        }
+
+        .setting-select:focus {
+            border-color: rgba(255, 138, 151, 0.26);
+        }
+
+        .settings-actions {
+            display: grid;
+            gap: 10px;
+        }
+
+        .reset-btn,
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            min-height: 44px;
+            padding: 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+            cursor: pointer;
+            transition: border-color var(--transition), background var(--transition), color var(--transition),
+                transform var(--transition);
+        }
+
+        .reset-btn {
+            border: 1px solid rgba(255, 138, 151, 0.18);
+            background: rgba(255, 59, 82, 0.14);
+            color: var(--accent-soft);
+        }
+
+        .logout-btn {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--muted-strong);
+        }
+
+        .reset-btn:hover,
+        .logout-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .booster-layout,
+        .booster-stage,
+        .monitor-stack {
+            display: grid;
+            gap: 14px;
+        }
+
+        .booster-switch-card,
+        .booster-panel,
+        .preview-card {
+            padding: 14px;
+        }
+
+        .booster-switch-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .booster-switch-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .booster-pill {
+            min-height: 66px;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 42px minmax(0, 1fr);
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 108, 124, 0.14);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)), rgba(12, 5, 7, 0.92);
+            transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition),
+                background var(--transition);
+        }
+
+        .booster-pill img {
+            width: 42px;
+            height: 42px;
+            object-fit: cover;
+            border-radius: 13px;
+        }
+
+        .booster-pill span {
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.35;
+        }
+
+        .booster-pill.is-active {
+            border-color: rgba(255, 138, 151, 0.34);
+            background: linear-gradient(180deg, rgba(255, 59, 82, 0.22), rgba(255, 59, 82, 0.07)), rgba(12, 5, 7, 0.96);
+            box-shadow: 0 18px 34px rgba(0, 0, 0, 0.34), 0 0 18px rgba(255, 59, 82, 0.16);
+        }
+
+        .booster-panel {
+            display: none;
+            gap: 14px;
+        }
+
+        .booster-panel.is-active {
+            display: grid;
+            animation: section-enter 260ms ease;
+        }
+
+        .booster-panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .booster-game h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+
+        .booster-game p {
+            margin: 5px 0 0;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .booster-launch {
+            min-width: 108px;
+            background: linear-gradient(180deg, rgba(255, 59, 82, 0.36), rgba(148, 12, 31, 0.28)), rgba(10, 4, 6, 0.96);
+            border-color: rgba(255, 138, 151, 0.3);
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.36), 0 0 20px rgba(255, 59, 82, 0.16);
+        }
+
+        .booster-tuning {
+            display: grid;
+            gap: 10px;
+        }
+
+        .tune-row {
+            padding: 12px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 108, 124, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            display: grid;
+            gap: 10px;
+        }
+
+        .tune-top {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tune-copy {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tune-badge {
+            width: 26px;
+            height: 26px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 26px;
+            background: rgba(255, 59, 82, 0.12);
+            border: 1px solid rgba(255, 138, 151, 0.2);
+            color: var(--accent-soft);
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .tune-name {
+            margin: 0;
+            min-width: 0;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+
+        .tune-value {
+            min-width: 48px;
+            text-align: right;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--accent-soft);
+        }
+
+        .tune-slider {
+            width: 100%;
+            height: 4px;
+            margin: 0;
+            appearance: none;
+            border-radius: 999px;
+            background: linear-gradient(90deg,
+                    var(--accent) 0 calc(var(--value, 0) * 1%),
+                    rgba(255, 255, 255, 0.08) calc(var(--value, 0) * 1%),
+                    rgba(255, 255, 255, 0.08) 100%);
+            outline: none;
+        }
+
+        .tune-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 999px;
+            border: 2px solid #ffd7db;
+            background: linear-gradient(180deg, #ffb3bb, #ff3b52);
+            box-shadow: 0 0 0 4px rgba(255, 59, 82, 0.12), 0 8px 16px rgba(0, 0, 0, 0.28);
+        }
+
+        .tune-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffd7db;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #ffb3bb, #ff3b52);
+            box-shadow: 0 0 0 4px rgba(255, 59, 82, 0.12), 0 8px 16px rgba(0, 0, 0, 0.28);
+        }
+
+        .tune-slider::-moz-range-track {
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .booster-preview {
+            display: grid;
+            grid-template-columns: 88px minmax(0, 1fr);
+            gap: 12px;
+            padding: 12px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 108, 124, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .preview-dial {
+            --dial: 0;
+            width: 88px;
+            height: 88px;
+            padding: 7px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: conic-gradient(var(--accent) calc(var(--dial) * 1%), rgba(255, 255, 255, 0.08) 0);
+            box-shadow: 0 0 24px rgba(255, 59, 82, 0.2), 0 0 40px rgba(255, 59, 82, 0.12);
+        }
+
+        .preview-core {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at 35% 30%, rgba(255, 122, 136, 0.28), transparent 34%),
+                linear-gradient(180deg, rgba(82, 8, 16, 0.98), rgba(26, 2, 5, 0.98));
+            border: 1px solid rgba(255, 124, 136, 0.28);
+            box-shadow: inset 0 1px 0 rgba(255, 220, 224, 0.12), inset 0 0 18px rgba(255, 59, 82, 0.16);
+        }
+
+        .preview-score {
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 0.03em;
+            color: #ffd6db;
+            text-shadow: 0 0 10px rgba(255, 59, 82, 0.28), 0 0 18px rgba(255, 59, 82, 0.12);
+        }
+
+        .preview-list {
+            display: grid;
+            align-content: start;
+            gap: 9px;
+        }
+
+        .preview-item {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 5px 8px;
+            align-items: center;
+        }
+
+        .preview-item span,
+        .preview-item strong {
+            font-size: 11px;
+        }
+
+        .preview-item span {
+            color: var(--muted-strong);
+        }
+
+        .preview-item strong {
+            color: var(--accent-soft);
+        }
+
+        .preview-track {
+            grid-column: 1 / -1;
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .preview-fill {
+            width: calc(var(--value, 0) * 1%);
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+            box-shadow: 0 0 16px rgba(255, 59, 82, 0.18);
+        }
+
+        .badge-grid,
+        .monitor-badges {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .badge {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 108, 124, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .badge b {
+            color: var(--text);
+        }
+
+        .chart-card,
+        .control-card,
+        .console-card {
+            padding: 14px;
+        }
+
+        .chart-title,
+        .card-title {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+
+        .chart-sub {
+            margin: 6px 0 0;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .chart-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        canvas {
+            width: 100%;
+            height: 154px;
+            display: block;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 108, 124, 0.08);
+            background: #030102;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .controls button {
+            padding: 11px 10px;
+            min-height: 44px;
+            text-align: center;
+        }
+
+        .controls button.toggleOn {
+            border-color: rgba(255, 138, 151, 0.32);
+            background: linear-gradient(180deg, rgba(255, 59, 82, 0.28), rgba(148, 12, 31, 0.16)), rgba(12, 5, 7, 0.96);
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.34), 0 0 18px rgba(255, 59, 82, 0.14);
+        }
+
+        .consoleView {
+            min-height: 192px;
+            max-height: 228px;
+            overflow: auto;
+            padding: 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 108, 124, 0.08);
+            background: #050102;
+            font: 12px/1.6 Consolas, "Courier New", monospace;
+        }
+
+        .consoleInput {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .consoleInput input {
+            min-height: 46px;
+            padding: 0 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 108, 124, 0.14);
+            outline: none;
+            background: rgba(255, 255, 255, 0.035);
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .consoleInput input:focus {
+            border-color: rgba(255, 138, 151, 0.32);
+            box-shadow: 0 0 0 4px rgba(255, 59, 82, 0.1);
+        }
+
+        .consoleInput button {
+            min-width: 82px;
+            background: linear-gradient(180deg, rgba(255, 59, 82, 0.32), rgba(148, 12, 31, 0.18)), rgba(12, 5, 7, 0.96);
+        }
+
+        .logLine {
+            margin: 0 0 6px;
+            color: #efe6ff;
+            word-break: break-word;
+        }
+
+        .logLine.warn {
+            color: var(--warning);
+        }
+
+        .logLine.error {
+            color: var(--danger);
+        }
+
+        .logLine .t,
+        .logLine .prefix {
+            color: #ffb7c1;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            z-index: 20;
+            width: min(100%, 430px);
+            padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+            border-radius: 24px 24px 0 0;
+            border-top: 1px solid rgba(255, 108, 124, 0.16);
+            border-left: 0;
+            border-right: 0;
+            border-bottom: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015)), rgba(8, 4, 6, 0.94);
+            box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.34);
+            backdrop-filter: blur(18px) saturate(145%);
+            -webkit-backdrop-filter: blur(18px) saturate(145%);
+        }
+
+        .bottom-item {
+            min-height: 56px;
+            padding: 8px 6px;
+            display: grid;
+            place-items: center;
+            gap: 5px;
+            border-radius: 16px;
+            color: var(--muted);
+            transition: transform var(--transition), color var(--transition), background var(--transition),
+                box-shadow var(--transition);
+        }
+
+        .bottom-icon {
+            display: grid;
+            place-items: center;
+            line-height: 0;
+            transition: transform var(--transition);
+        }
+
+        .bottom-item.is-active {
+            color: var(--text);
+            background: linear-gradient(180deg, rgba(255, 59, 82, 0.28), rgba(148, 12, 31, 0.12)), rgba(13, 9, 22, 0.96);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 0 18px rgba(255, 59, 82, 0.14);
+        }
+
+        .bottom-item.is-active .bottom-icon {
+            transform: translateY(-1px);
+        }
+
+        .bottom-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 1.7;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            overflow: visible;
+        }
+
+        .bottom-label {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 30;
+            background: rgba(1, 4, 8, 0.68);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition);
+        }
+
+        .modal {
+            position: fixed;
+            left: 50%;
+            bottom: calc(92px + env(safe-area-inset-bottom));
+            z-index: 31;
+            width: min(calc(100% - 24px), 360px);
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 108, 124, 0.18);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.018)), rgba(12, 5, 7, 0.96);
+            box-shadow: 0 24px 50px rgba(0, 0, 0, 0.48), 0 0 26px rgba(255, 59, 82, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, 24px);
+            transition: opacity var(--transition), transform var(--transition);
+        }
+
+        .modal-icon {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 108, 124, 0.16);
+            background: rgba(255, 59, 82, 0.1);
+            color: var(--accent-soft);
+        }
+
+        .modal-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        .modal-title {
+            margin: 0 0 4px;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .modal-text {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--muted);
+        }
+
+        .modal-backdrop.is-open,
+        .modal.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal.is-open {
+            transform: translate(-50%, 0);
+        }
+
+        .boost-toast {
+            position: fixed;
+            left: 50%;
+            top: calc(16px + env(safe-area-inset-top));
+            z-index: 40;
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 108, 124, 0.18);
+            background: linear-gradient(180deg, rgba(255, 59, 82, 0.2), rgba(255, 255, 255, 0.02)), rgba(10, 4, 6, 0.94);
+            box-shadow: 0 18px 34px rgba(0, 0, 0, 0.38), 0 0 18px rgba(255, 59, 82, 0.14);
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 800;
+            transform: translate(-50%, -12px);
+            opacity: 0;
+            transition: opacity var(--transition), transform var(--transition);
+        }
+
+        .boost-toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        @keyframes section-enter {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 390px) {
+            .app-shell {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            .brand-title {
+                font-size: 20px;
+            }
+            .home-contact-row,
+            .home-info-row {
+                padding: 16px 15px;
+            }
+            .home-icon-box {
+                width: 52px;
+                height: 52px;
+                flex-basis: 52px;
+                border-radius: 16px;
+                font-size: 14px;
+            }
+            .home-contact-name {
+                font-size: 19px;
+            }
+            .home-contact-link,
+            .home-info-value,
+            .home-info-label {
+                font-size: 15px;
+            }
+            .home-contact-sub {
+                max-width: 142px;
+                font-size: 12px;
+            }
+            .home-rail {
+                grid-template-columns: 1fr;
+            }
+            .header-meta,
+            .badge-grid,
+            .monitor-badges,
+            .controls,
+            .profile-links {
+                grid-template-columns: 1fr;
+            }
+            .booster-preview {
+                grid-template-columns: 1fr;
+            }
+            .preview-dial {
+                margin: 0 auto;
+            }
+            .func-card {
+                gap: 12px;
+                padding: 13px 14px;
+            }
+            .func-info {
+                padding-right: 42px;
+            }
+            .func-num {
+                right: 60px;
+            }
+            .setting-row {
+                gap: 12px;
+                padding: 13px 14px;
+            }
+            .setting-select {
+                min-width: 102px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <header class="app-header glass-card">
+            <div class="topbar">
+                <div class="brand-copy">
+                    <p class="brand-overline">Premium Mobile Dashboard</p>
+                    <h1 class="brand-title">ULTRALOCK</h1>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-stack">
+            <!-- ===== Home Section ===== -->
+            <section class="page-section" id="homeSection" data-section="home">
+                <article class="home-hero-card glass-card">
+                    <p class="home-hero-kicker">Developer / Admin • Mobile Control</p>
+                    <div class="home-badge-row" aria-label="Trạng thái hệ thống">
+                        <span class="home-badge is-admin">Admin</span>
+                        <span class="home-badge is-dev">Premium</span>
+                        <span class="home-badge is-verified">Verified</span>
+                        <span class="home-badge is-ff">FF Panel</span>
+                    </div>
+                </article>
+
+                <p class="home-section-title">Liên hệ admin</p>
+                <article class="home-panel glass-card">
+                    <a class="home-contact-row" href="https://t.me/+4FNZkt_TbdMxNzFl" target="_blank" rel="noopener">
+                        <div class="home-contact-left">
+                            <div class="home-icon-box is-soft">Fb</div>
+                            <div class="home-contact-copy">
+                                <div class="home-contact-name">Facebook</div>
+                                <div class="home-contact-sub">Hồ sơ chính thức • Verified</div>
+                            </div>
+                        </div>
+                        <span class="home-contact-link is-bright">Đức Thắng</span>
+                    </a>
+
+                    <a class="home-contact-row" href="https://zalo.me/0926540522" target="_blank" rel="noopener">
+                        <div class="home-contact-left">
+                            <div class="home-icon-box is-bright">Za</div>
+                            <div class="home-contact-copy">
+                                <div class="home-contact-name">Zalo</div>
+                                <div class="home-contact-sub">Hỗ trợ nhanh • Phản hồi trực tiếp</div>
+                            </div>
+                        </div>
+                        <span class="home-contact-link is-soft">0926540522</span>
+                    </a>
+
+                    <a class="home-contact-row" href="https://www.tiktok.com/@thaibao1720?_r=1&_t=ZS-98Tqm0iSSBR" target="_blank" rel="noopener">
+                        <div class="home-contact-left">
+                            <div class="home-icon-box is-deep">T1</div>
+                            <div class="home-contact-copy">
+                                <div class="home-contact-name">TikTok</div>
+                                <div class="home-contact-sub">Kênh cập nhật nội dung chính</div>
+                            </div>
+                        </div>
+                        <span class="home-contact-link is-rose">@thaibao1720</span>
+                    </a>
+
+                    <a class="home-contact-row" href="https://t.me/+4FNZkt_TbdMxNzFl" target="_blank" rel="noopener">
+                        <div class="home-contact-left">
+                            <div class="home-icon-box is-muted">T2</div>
+                            <div class="home-contact-copy">
+                                <div class="home-contact-name">Telegram</div>
+                                <div class="home-contact-sub">Kênh nội dung bổ sung</div>
+                            </div>
+                        </div>
+                        <span class="home-contact-link is-rose">@thaibao1720</span>
+                    </a>
+                </article>
+
+                <p class="home-section-title">Thông tin ứng dụng</p>
+                <article class="home-panel glass-card">
+                    <div class="home-info-row">
+                        <span class="home-info-label">Tên ứng dụng</span>
+                        <span class="home-info-value">UULTRALOCK</span>
+                    </div>
+                    <div class="home-info-row">
+                        <span class="home-info-label">Giao diện</span>
+                        <span class="home-info-value is-soft">Dark Neon Red</span>
+                    </div>
+                    <div class="home-info-row">
+                        <span class="home-info-label">Điều hướng</span>
+                        <span class="home-info-value">5 Tab</span>
+                    </div>
+                    <div class="home-info-row">
+                        <span class="home-info-label">Game hỗ trợ</span>
+                        <span class="home-info-value is-warm">Free Fire / Free Fire MAX</span>
+                    </div>
+                    <div class="home-info-row">
+                        <span class="home-info-label">Booster mặc định</span>
+                        <span class="home-info-value">100%</span>
+                    </div>
+                    <div class="home-info-row">
+                        <span class="home-info-label">Ngôn ngữ</span>
+                        <span class="home-info-value">Tiếng Việt</span>
+                    </div>
+                    <div class="home-info-row">
+                        <span class="home-info-label">Quản trị</span>
+                        <span class="home-info-value is-bright">Đức Thắng</span>
+                    </div>
+                </article>
+
+                <article class="home-intro-card glass-card">
+                    <p class="home-intro-kicker">Tổng Quan Điều Khiển</p>
+                    <h2 class="home-intro-title">Trung tâm điều khiển tối ưu cho thao tác nhanh trên mobile.</h2>
+                    <p class="home-intro-copy">UCHIHA V3 kết hợp khu chức năng, booster và giám sát thời gian thực trong một giao diện gọn, rõ và phản hồi nhanh để mọi thao tác đều liền mạch hơn.</p>
+                    <div class="home-chip-row" aria-label="Điểm nổi bật">
+                        <span class="home-chip">Gọn và sắc nét</span>
+                        <span class="home-chip">Booster trực quan</span>
+                        <span class="home-chip">Realtime mượt</span>
+                    </div>
+                    <p class="home-intro-foot">Thiết kế tập trung vào tốc độ thao tác, nhịp chuyển mượt và khả năng quan sát trạng thái hệ thống chỉ trong một chạm.</p>
+                </article>
+
+                <article class="profile-card glass-card">
+                    <div class="profile-head">
+                        <div class="profile-avatar">
+                            <img src="https://ultralock-ducthang.netlify.app/UCHIHA%20V4_files/devhieuduong.jpg" alt="Dev Duc Thang" />
+                        </div>
+                        <div class="profile-body">
+                            <h2>Đức Thắng</h2>
+                            <p>Developer / Admin</p>
+                        </div>
+                    </div>
+                    <div class="profile-links">
+                        <a class="profile-btn" href="https://t.me/+4FNZkt_TbdMxNzFl" target="_blank" rel="noopener">Telegram</a>
+                        <a class="profile-btn" href="https://zalo.me/0926540522">Zalo</a>
+                        <a class="profile-btn" href="https://www.tiktok.com/@thaibao1720?_r=1&_t=ZS-98Tqm0iSSBR" target="_blank" rel="noopener">TikTok 1</a>
+                        <a class="profile-btn" href="https://www.tiktok.com/@thaibao1720?_r=1&_t=ZS-98Tqm0iSSBR" target="_blank" rel="noopener">TikTok 2</a>
+                    </div>
+                </article>
+            </section>
+
+            <!-- ===== Premium (Function) Section ===== -->
+            <section class="page-section" id="premiumSection" data-section="premium" hidden>
+                <article class="section-card glass-card">
+                    <div class="section-head">
+                        <div>
+                            <p class="section-eyebrow">Function</p>
+                            <h2 class="section-title">SYSTEM FUNCITON VIP</h2>
+                        </div>
+                    </div>
+                    <div class="func-list">
+                        <!-- 9 function items -->
+                        <article class="func-card" id="fc-0">
+                            <div class="func-icon-wrap">
+                                <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5">
+                                    <circle cx="10" cy="10" r="7"></circle>
+                                    <circle cx="10" cy="10" r="3"></circle>
+                                    <circle cx="10" cy="10" r="1" fill="currentColor" stroke="none"></circle>
+                                    <line x1="10" y1="3" x2="10" y2="7"></line>
+                                    <line x1="10" y1="13" x2="10" y2="17"></line>
+                                    <line x1="3" y1="10" x2="7" y2="10"></line>
+                                    <line x1="13" y1="10" x2="17" y2="10"></line>
+                                </svg>
+                            </div>
+                            <div class="func-info">
+                                <div class="func-name">AIMLOCK</div>
+                                <div class="func-desc">Bám đầu thông minh - AI tự động căn chuẩn điểm ngắm vào đầu mục tiêu</div>
+                            </div>
+                            <div class="func-num">01</div>
+                            <label class="toggle"><input id="aimlockToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                        </article>
+                        <article class="func-card" id="fc-1">
+                            <div class="func-icon-wrap">
+                                <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5">
+                                    <path d="M3 10 L7 6 L11 9 L14 5 L17 8"></path>
+                                    <path d="M3 14 L7 10 L11 13 L14 9 L17 12" opacity="0.4"></path>
+                                    <line x1="3" y1="17" x2="17" y2="17"></line>
+                                </svg>
+                            </div>
+                            <div class="func-info">
+                                <div class="func-name">STABILITY ASSIST</div>
+                                <div class="func-desc">Nhẹ tâm - Ổn định đường ngắm, giảm độ trôi khi kéo tâm</div>
+                            </div>
+                            <div class="func-num">02</div>
+                            <label class="toggle"><input id="stabilityAssistToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                        </article>
+                        <article class="func-card" id="fc-2">
+                            <div class="func-icon-wrap">
+                                <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5">
+                                    <rect x="3" y="3" width="14" height="14" rx="2"></rect>
+                                    <circle cx="10" cy="10" r="3"></circle>
+                                    <line x1="10" y1="3" x2="10" y2="7"></line>
+                                    <line x1="10" y1="13" x2="10" y2="17"></line>
+                                    <line x1="3" y1="10" x2="7" y2="10"></line>
+                                    <line x1="13" y1="10" x2="17" y2="10"></line>
+                                </svg>
+                            </div>
+                            <div class="func-info">
+                                <div class="func-name">AIM HOLD</div>
+                                <div class="func-desc">Ghim tâm - Giữ cố định điểm ngắm khi đứng yên tấn công</div>
+                            </div>
+                            <div class="func-num">03</div>
+                            <label class="toggle"><input id="aimHoldToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                        </article>
+                        <article class="func-card" id="fc-3">
+                            <div class="func-icon-wrap">
+                                <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5">
+                                    <path d="M10 2 L16 5 L16 11 C16 14.5 13 17 10 18 C7 17 4 14.5 4 11 L4 5 Z"></path>
+                                    <circle cx="10" cy="10" r="2.5"></circle>
+                                    <line x1="10" y1="7.5" x2="10" y2="5"></line>
+                                </svg>
+                            </div>
+                            <div class="func-info">
+                                <div class="func-name">AIM LOCKDOWN</div>
+                                <div class="func-desc">Đầm tâm - Khóa vị trí ngắm chắc chắn trong vùng mục tiêu</div>
+                            </div>
+                            <div class="func-num">04</div>
+                            <label class="toggle"><input id="aimLockdownToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                        </article>
+                        <article class="func-card" id="fc-4">
+                            <div class="func-icon-wrap">
+                                <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5">
+                                    <path d="M4 16 L8 8 L12 12 L14 6 L17 9"></path>
+                                    <circle cx="17" cy="9" r="2" fill="currentColor" stroke="none"></circle>
+                                    <line x1="2" y1="16" x2="18" y2="16"></line>
+                                </svg>
+                            </div>
+                            <div class="func-info">
+                                <div class="func-name">SENVIBITY BOOSTER</div>
+                                <div class="func-desc">Nhạy - Tăng độ nhạy cảm ứng và phản hồi chạm nhanh hơn</div>
+                            </div>
+                            <div class="func-num">05</div>
+                            <label class="toggle"><input id="sensitivityBoostToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                        </article>
+                        <article class="func-card" id="fc-5">
+                            <div class="func-icon-wrap">
+                                <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5">
+                                    <rect x="2" y="4" width="16" height="11" rx="1.5"></rect>
+                                    <line x1="7" y1="17" x2="13" y2="17"></line>
+                                    <line x1="10" y1="15" x2="10" y2="17"></line>
+                                    <path d="M7 9 L9.5 7 L12 10 L14 8"></path>
+                                </svg>
+                            </div>
+                            <div class="func-info">
+                                <div class="func-name">SCREEN BOOSTER</div>
+                                <div class="func-desc">Buff màn - Nâng cao chất lượng hình ảnh, tăng độ nét và tương phản</div>
+                            </div>
+                            <div class="func-num">06</div>
+                            <label class="toggle"><input id="screenBoostToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                        </article>
+                        <article class="func-card" id="fc-6">
+                            <div class="func-icon-wrap">
+                                <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5">
+                                    <circle cx="10" cy="7" r="3.5"></circle>
+                                    <path d="M5.5 15 C5.5 12 7.5 10.5 10 10.5 C12.5 10.5 14.5 12 14.5 15"></path>
+                                    <line x1="10" y1="3" x2="10" y2="1"></line>
+                                    <line x1="14" y1="5" x2="16" y2="3.5"></line>
+                                    <line x1="6" y1="5" x2="4" y2="3.5"></line>
+                                </svg>
+                            </div>
+                            <div class="func-info">
+                                <div class="func-name">HEADSHOT FIX</div>
+                                <div class="func-desc">Fix lỗi đầu - Hiệu chỉnh sai số điểm ngắm đầu người chính xác</div>
+                            </div>
+                            <div class="func-num">07</div>
+                            <label class="toggle"><input id="headshotFixToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                        </article>
+                        <article class="func-card" id="fc-7">
+                            <div class="func-icon-wrap">
+                                <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5">
+                                    <line x1="2" y1="10" x2="12" y2="10"></line>
+                                    <polygon points="12,7 18,10 12,13" fill="currentColor" stroke="none"></polygon>
+                                    <line x1="5" y1="6" x2="5" y2="14" stroke-dasharray="2 2"></line>
+                                    <line x1="10" y1="6" x2="10" y2="14" stroke-dasharray="2 2"></line>
+                                </svg>
+                            </div>
+                            <div class="func-info">
+                                <div class="func-name">BULLET ALIGN</div>
+                                <div class="func-desc">Fix lệch đạn - Căn chỉnh quỹ đạo đạn khớp với điểm ngắm</div>
+                            </div>
+                            <div class="func-num">08</div>
+                            <label class="toggle"><input id="bulletAlignToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                        </article>
+                        <article class="func-card" id="fc-8">
+                            <div class="func-icon-wrap">
+                                <svg viewBox="0 0 20 20" fill="none" stroke-width="1.5">
+                                    <path d="M5 10 C5 10 6 8 8 10 C10 12 12 8 14 10 C16 12 15 10 15 10"></path>
+                                    <path d="M3 7 L3 13" stroke-width="2" stroke-linecap="round"></path>
+                                    <path d="M17 7 L17 13" stroke-width="2" stroke-linecap="round"></path>
+                                    <line x1="10" y1="3" x2="10" y2="5"></line>
+                                    <line x1="10" y1="15" x2="10" y2="17"></line>
+                                </svg>
+                            </div>
+                            <div class="func-info">
+                                <div class="func-name">SHAKE FIX</div>
+                                <div class="func-desc">Fix rung - Khử rung camera và ổn định màn hình khi di chuyển</div>
+                            </div>
+                            <div class="func-num">09</div>
+                            <label class="toggle"><input id="shakeFixToggle" class="sound-toggle" type="checkbox" /><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+                        </article>
+                    </div>
+                </article>
+            </section>
+
+            <!-- ===== Booster Section ===== -->
+            <section class="page-section" id="boosterSection" data-section="booster" hidden>
+                <div id="realtimePage" class="booster-layout">
+                    <article id="boosterBox" class="booster-switch-card glass-card">
+                        <div class="booster-switch-grid">
+                            <button class="booster-pill is-active" type="button" data-booster-target="ff">
+                                <img src="https://ultralock-ducthang.netlify.app/UCHIHA%20V4_files/IMG-8479.jpg" alt="FREE FIRE" loading="lazy" />
+                                <span>FREE FIRE</span>
+                            </button>
+                            <button class="booster-pill" type="button" data-booster-target="ffm">
+                                <img src="https://ultralock-ducthang.netlify.app/UCHIHA%20V4_files/IMG-8478.jpg" alt="FREE FIRE MAX" loading="lazy" />
+                                <span>FREE FIRE MAX</span>
+                            </button>
+                        </div>
+                    </article>
+
+                    <div class="booster-stage">
+                        <!-- FF Panel -->
+                        <article class="booster-panel glass-card is-active" data-booster-panel="ff">
+                            <div class="booster-panel-head">
+                                <div class="booster-game">
+                                    <h3>FREE FIRE</h3>
+                                    <p>Aligned sliders with a compact mobile booster presentation.</p>
+                                </div>
+                                <button class="booster-launch" id="launchFF" type="button">BOOSTER</button>
+                            </div>
+                            <div class="booster-tuning">
+                                <div class="tune-row"><div class="tune-top"><div class="tune-copy"><span class="tune-badge">01</span><label class="tune-name" for="ffAimlock">AIMLOCK</label></div><output class="tune-value" for="ffAimlock">0%</output></div><input id="ffAimlock" class="tune-slider" type="range" min="0" max="100" value="0" data-profile="ff" data-setting="aimlock" /></div>
+                                <div class="tune-row"><div class="tune-top"><div class="tune-copy"><span class="tune-badge">02</span><label class="tune-name" for="ffStabilityAssist">STABILITY ASSIST</label></div><output class="tune-value" for="ffStabilityAssist">0%</output></div><input id="ffStabilityAssist" class="tune-slider" type="range" min="0" max="100" value="0" data-profile="ff" data-setting="stabilityAssist" /></div>
+                                <div class="tune-row"><div class="tune-top"><div class="tune-copy"><span class="tune-badge">03</span><label class="tune-name" for="ffAimHold">AIM HOLD</label></div><output class="tune-value" for="ffAimHold">0%</output></div><input id="ffAimHold" class="tune-slider" type="range" min="0" max="100" value="0" data-profile="ff" data-setting="aimHold" /></div>
+                                <div class="tune-row"><div class="tune-top"><div class="tune-copy"><span class="tune-badge">04</span><label class="tune-name" for="ffHeadshotFix">HEADSHOT FIX</label></div><output class="tune-value" for="ffHeadshotFix">0%</output></div><input id="ffHeadshotFix" class="tune-slider" type="range" min="0" max="100" value="0" data-profile="ff" data-setting="headshotFix" /></div>
+                                <div class="tune-row"><div class="tune-top"><div class="tune-copy"><span class="tune-badge">05</span><label class="tune-name" for="ffBulletAlign">BULLET ALIGN</label></div><output class="tune-value" for="ffBulletAlign">0%</output></div><input id="ffBulletAlign" class="tune-slider" type="range" min="0" max="100" value="0" data-profile="ff" data-setting="bulletAlign" /></div>
+                            </div>
+                            <div class="booster-preview" data-preview-profile="ff">
+                                <div class="preview-dial" style="--dial: 0"><div class="preview-core"><span class="preview-score" data-profile-score="ff">0%</span></div></div>
+                                <div class="preview-list">
+                                    <div class="preview-item" data-preview-setting="aimlock" data-preview-profile="ff"><span>AIMLOCK</span><strong data-preview-value>0%</strong><div class="preview-track"><div class="preview-fill" style="--value: 0" data-preview-fill></div></div></div>
+                                    <div class="preview-item" data-preview-setting="stabilityAssist" data-preview-profile="ff"><span>STABILITY ASSIST</span><strong data-preview-value>0%</strong><div class="preview-track"><div class="preview-fill" style="--value: 0" data-preview-fill></div></div></div>
+                                    <div class="preview-item" data-preview-setting="aimHold" data-preview-profile="ff"><span>AIM HOLD</span><strong data-preview-value>0%</strong><div class="preview-track"><div class="preview-fill" style="--value: 0" data-preview-fill></div></div></div>
+                                    <div class="preview-item" data-preview-setting="headshotFix" data-preview-profile="ff"><span>HEADSHOT FIX</span><strong data-preview-value>0%</strong><div class="preview-track"><div class="preview-fill" style="--value: 0" data-preview-fill></div></div></div>
+                                    <div class="preview-item" data-preview-setting="bulletAlign" data-preview-profile="ff"><span>BULLET ALIGN</span><strong data-preview-value>0%</strong><div class="preview-track"><div class="preview-fill" style="--value: 0" data-preview-fill></div></div></div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- FFM Panel -->
+                        <article class="booster-panel glass-card" data-booster-panel="ffm">
+                            <div class="booster-panel-head">
+                                <div class="booster-game">
+                                    <h3>FREE FIRE MAX</h3>
+                                    <p>Aligned sliders with a compact mobile booster presentation.</p>
+                                </div>
+                                <button class="booster-launch" id="launchFFM" type="button">BOOSTER</button>
+                            </div>
+                            <div class="booster-tuning">
+                                <div class="tune-row"><div class="tune-top"><div class="tune-copy"><span class="tune-badge">01</span><label class="tune-name" for="ffmAimLockdown">AIM LOCKDOWN</label></div><output class="tune-value" for="ffmAimLockdown">0%</output></div><input id="ffmAimLockdown" class="tune-slider" type="range" min="0" max="100" value="0" data-profile="ffm" data-setting="aimLockdown" /></div>
+                                <div class="tune-row"><div class="tune-top"><div class="tune-copy"><span class="tune-badge">02</span><label class="tune-name" for="ffmSensitivityBoost">SENVIBITY BOOSTER</label></div><output class="tune-value" for="ffmSensitivityBoost">0%</output></div><input id="ffmSensitivityBoost" class="tune-slider" type="range" min="0" max="100" value="0" data-profile="ffm" data-setting="sensitivityBoost" /></div>
+                                <div class="tune-row"><div class="tune-top"><div class="tune-copy"><span class="tune-badge">03</span><label class="tune-name" for="ffmScreenBoost">SCREEN BOOSTER</label></div><output class="tune-value" for="ffmScreenBoost">0%</output></div><input id="ffmScreenBoost" class="tune-slider" type="range" min="0" max="100" value="0" data-profile="ffm" data-setting="screenBoost" /></div>
+                                <div class="tune-row"><div class="tune-top"><div class="tune-copy"><span class="tune-badge">04</span><label class="tune-name" for="ffmShakeFix">SHAKE FIX</label></div><output class="tune-value" for="ffmShakeFix">0%</output></div><input id="ffmShakeFix" class="tune-slider" type="range" min="0" max="100" value="0" data-profile="ffm" data-setting="shakeFix" /></div>
+                                <div class="tune-row"><div class="tune-top"><div class="tune-copy"><span class="tune-badge">05</span><label class="tune-name" for="ffmHeadshotFix">HEADSHOT FIX</label></div><output class="tune-value" for="ffmHeadshotFix">0%</output></div><input id="ffmHeadshotFix" class="tune-slider" type="range" min="0" max="100" value="0" data-profile="ffm" data-setting="headshotFix" /></div>
+                            </div>
+                            <div class="booster-preview" data-preview-profile="ffm">
+                                <div class="preview-dial" style="--dial: 0"><div class="preview-core"><span class="preview-score" data-profile-score="ffm">0%</span></div></div>
+                                <div class="preview-list">
+                                    <div class="preview-item" data-preview-setting="aimLockdown" data-preview-profile="ffm"><span>AIM LOCKDOWN</span><strong data-preview-value>0%</strong><div class="preview-track"><div class="preview-fill" style="--value: 0" data-preview-fill></div></div></div>
+                                    <div class="preview-item" data-preview-setting="sensitivityBoost" data-preview-profile="ffm"><span>SENVIBITY BOOSTER</span><strong data-preview-value>0%</strong><div class="preview-track"><div class="preview-fill" style="--value: 0" data-preview-fill></div></div></div>
+                                    <div class="preview-item" data-preview-setting="screenBoost" data-preview-profile="ffm"><span>SCREEN BOOSTER</span><strong data-preview-value>0%</strong><div class="preview-track"><div class="preview-fill" style="--value: 0" data-preview-fill></div></div></div>
+                                    <div class="preview-item" data-preview-setting="shakeFix" data-preview-profile="ffm"><span>SHAKE FIX</span><strong data-preview-value>0%</strong><div class="preview-track"><div class="preview-fill" style="--value: 0" data-preview-fill></div></div></div>
+                                    <div class="preview-item" data-preview-setting="headshotFix" data-preview-profile="ffm"><span>HEADSHOT FIX</span><strong data-preview-value>0%</strong><div class="preview-track"><div class="preview-fill" style="--value: 0" data-preview-fill></div></div></div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== Monitor Section ===== -->
+            <section class="page-section" id="monitorSection" data-section="monitor" hidden>
+                <div class="monitor-stack">
+                    <article class="monitor-card glass-card">
+                        <div class="monitor-head">
+                            <div>
+                                <p class="section-eyebrow">Realtime</p>
+                                <h2 class="section-title">CPU &amp; RAM Wave</h2>
+                                <p class="section-note">Premium compact monitor with aligned metrics.</p>
+                            </div>
+                        </div>
+                        <div class="monitor-badges">
+                            <div class="badge"><span>FPS</span><b id="mFps">0</b></div>
+                            <div class="badge"><span>Frame</span><b><span id="mFrame">0.0</span> ms</b></div>
+                            <div class="badge"><span>CPU est</span><b><span id="mCpu">0</span>%</b></div>
+                            <div class="badge"><span>RAM</span><b id="mRam">N/A</b></div>
+                        </div>
+                    </article>
+
+                    <article class="chart-card glass-card">
+                        <div class="chart-meta">
+                            <div>
+                                <p class="chart-title">CPU (Ước Lượng Theo Thời Gian Bận Mỗi Frame)</p>
+                                <p class="chart-sub">Target: <span id="mTarget">120</span> FPS</p>
+                            </div>
+                        </div>
+                        <canvas id="cpuCanvas" width="900" height="180"></canvas>
+                    </article>
+
+                    <article class="chart-card glass-card">
+                        <div class="chart-meta">
+                            <div>
+                                <p class="chart-title">RAM (MB) / Heap Used</p>
+                                <p class="chart-sub">Scale Auto</p>
+                            </div>
+                        </div>
+                        <canvas id="ramCanvas" width="900" height="180"></canvas>
+                    </article>
+
+                    <article class="control-card glass-card">
+                        <div class="section-head">
+                            <div>
+                                <p class="section-eyebrow">Controls</p>
+                                <h3 class="card-title">Realtime Actions</h3>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <button id="btnLock" class="toggleOn" type="button">UnLock 120 FPS : OFF</button>
+                            <button id="btnClearConsole" type="button">Xóa Console</button>
+                            <button id="btnCleanRam" type="button">Dọn RAM</button>
+                            <button id="btnCleanCpu" type="button">Dọn CPU</button>
+                            <button id="btnOptRam" type="button">Tối Ưu RAM</button>
+                            <button id="btnOptCpu" type="button">Tối Ưu CPU</button>
+                            <button id="btnOptFps" type="button">Tối Ưu FPS</button>
+                        </div>
+                    </article>
+
+                    <article class="console-card glass-card">
+                        <div class="section-head">
+                            <div>
+                                <p class="section-eyebrow">Console</p>
+                                <h3 class="card-title">Command Output</h3>
+                            </div>
+                            <div class="badge-grid" style="grid-template-columns: repeat(2, minmax(0, 92px));">
+                                <div class="badge"><span>Logs</span><b id="mLogs">0</b></div>
+                                <div class="badge"><span>Errors</span><b id="mErrs">0</b></div>
+                            </div>
+                        </div>
+                        <div id="consoleView" class="consoleView" aria-label="console"></div>
+                        <div class="consoleInput">
+                            <input id="cmd" type="text" placeholder="Nhập lệnh JS rồi Enter..." autocomplete="off" />
+                            <button id="btnExec" type="button">Run</button>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- ===== Settings Section ===== -->
+            <section class="page-section" id="setupSection" data-section="settings" hidden>
+                <div class="setup-stack">
+                    <article class="about-card glass-card">
+                        <p class="about-logo-text">ULTRALOCK</p>
+                        <p class="about-version">Bảng cài đặt cao cấp</p>
+                        <p class="about-desc">Tùy chọn hệ thống, hành vi giao diện và các điều khiển cấu hình nhanh cho bảng điều khiển hiện tại.</p>
+                        <div class="about-tags">
+                            <span class="about-tag">Chức năng</span>
+                            <span class="about-tag">Tăng tốc</span>
+                            <span class="about-tag">Thời gian thực</span>
+                            <span class="about-tag">Cổng key</span>
+                        </div>
+                    </article>
+
+                    <div class="settings-group">
+                        <p class="settings-group-title">Giao diện</p>
+                        <article class="setting-row glass-card">
+                            <div class="setting-row-icon"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><circle cx="8" cy="8" r="5"></circle><line x1="8" y1="1" x2="8" y2="3"></line><line x1="8" y1="13" x2="8" y2="15"></line><line x1="1" y1="8" x2="3" y2="8"></line><line x1="13" y1="8" x2="15" y2="8"></line></svg></div>
+                            <div class="setting-row-info"><p class="setting-row-name">Chế độ giao diện</p><p class="setting-row-desc">Kiểu hiển thị gọn</p></div>
+                            <div class="setting-row-ctrl"><select class="setting-select"><option>Kính tím</option><option>Đen cao cấp</option><option>Đen carbon</option></select></div>
+                        </article>
+                        <article class="setting-row glass-card">
+                            <div class="setting-row-icon"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><path d="M2 12 L6 6 L9 9 L11 5 L14 8"></path><line x1="2" y1="14" x2="14" y2="14"></line></svg></div>
+                            <div class="setting-row-info"><p class="setting-row-name">Mức hiệu ứng</p><p class="setting-row-desc">Độ mượt chuyển cảnh</p></div>
+                            <div class="setting-row-ctrl"><select class="setting-select"><option>Siêu mượt</option><option>Tiêu chuẩn</option><option>Tối giản</option></select></div>
+                        </article>
+                    </div>
+
+                    <div class="settings-group">
+                        <p class="settings-group-title">Hệ thống</p>
+                        <article class="setting-row glass-card">
+                            <div class="setting-row-icon"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><path d="M8 1 L8 6"></path><path d="M4 3 L7 6"></path><path d="M12 3 L9 6"></path><circle cx="8" cy="10" r="4"></circle></svg></div>
+                            <div class="setting-row-info"><p class="setting-row-name">Hiệu ứng âm thanh</p><p class="setting-row-desc">Phản hồi âm thanh giao diện</p></div>
+                            <div class="setting-row-ctrl"><label class="toggle"><input type="checkbox" id="settings-sound-toggle" checked /><span class="toggle-track"></span><span class="toggle-thumb"></span></label></div>
+                        </article>
+                        <article class="setting-row glass-card">
+                            <div class="setting-row-icon"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><rect x="2" y="3" width="12" height="9" rx="1"></rect><circle cx="12" cy="5" r="2.5"></circle></svg></div>
+                            <div class="setting-row-info"><p class="setting-row-name">Thông báo</p><p class="setting-row-desc">Thông báo nhanh của hệ thống</p></div>
+                            <div class="setting-row-ctrl"><label class="toggle"><input type="checkbox" id="settings-notification-toggle" checked /><span class="toggle-track"></span><span class="toggle-thumb"></span></label></div>
+                        </article>
+                        <article class="setting-row glass-card">
+                            <div class="setting-row-icon"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><rect x="3" y="7" width="10" height="8" rx="1"></rect><path d="M5 7 L5 5 C5 3.3 6.3 2 8 2 C9.7 2 11 3.3 11 5 L11 7"></path></svg></div>
+                            <div class="setting-row-info"><p class="setting-row-name">Lớp bảo mật</p><p class="setting-row-desc">Giữ lớp bảo vệ premium luôn hoạt động</p></div>
+                            <div class="setting-row-ctrl"><label class="toggle"><input type="checkbox" checked /><span class="toggle-track"></span><span class="toggle-thumb"></span></label></div>
+                        </article>
+                        <article class="setting-row glass-card">
+                            <div class="setting-row-icon"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><circle cx="8" cy="8" r="6"></circle><path d="M5 8 C5 6.3 6.3 5 8 5 C9.7 5 11 6.3 11 8"></path><path d="M8 8 L8 12"></path></svg></div>
+                            <div class="setting-row-info"><p class="setting-row-name">Tự động tối ưu</p><p class="setting-row-desc">Giữ cấu hình runtime luôn sẵn sàng</p></div>
+                            <div class="setting-row-ctrl"><label class="toggle"><input type="checkbox" checked /><span class="toggle-track"></span><span class="toggle-thumb"></span></label></div>
+                        </article>
+                    </div>
+
+                    <div class="settings-group">
+                        <p class="settings-group-title">Nâng cao</p>
+                        <div class="settings-actions">
+                            <button class="reset-btn" id="settings-reset-btn" type="button">ĐẶT LẠI CẤU HÌNH</button>
+                            <button class="logout-btn" id="settings-logout-btn" type="button">ĐĂNG XUẤT</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ===== Modal ===== -->
+    <div id="modalBackdrop" class="modal-backdrop"></div>
+    <div id="limitModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="limitModalTitle">
+        <div class="modal-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 8v5" />
+                <path d="M12 16.25h.01" />
+                <path d="M10.29 3.86 2.89 16.68A2 2 0 0 0 4.62 20h14.76a2 2 0 0 0 1.73-3.32L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+            </svg>
+        </div>
+        <div>
+            <p class="modal-title" id="limitModalTitle">SYSTEM FUNCITON VIP</p>
+            <p class="modal-text">Chỉ bật tối đa 9 chức năng cùng lúc.</p>
+        </div>
+    </div>
+
+    <!-- ===== Bottom Navigation ===== -->
+    <nav class="bottom-nav" aria-label="Primary">
+        <button class="bottom-item is-active" type="button" id="homeBottom" data-view-target="home">
+            <span class="bottom-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.75 10.5 12 4.75l7.25 5.75" /><path d="M7.25 9.75V18a1.25 1.25 0 0 0 1.25 1.25h2.25v-4.5a1 1 0 0 1 1-1h.5a1 1 0 0 1 1 1v4.5h2.25A1.25 1.25 0 0 0 16.75 18V9.75" /></svg></span>
+            <span class="bottom-label">Home</span>
+        </button>
+        <button class="bottom-item" type="button" id="functionBottom" data-view-target="premium">
+            <span class="bottom-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14" /><path d="M5 12h14" /><path d="M5 17h14" /><circle cx="9" cy="7" r="1.6" /><circle cx="15" cy="12" r="1.6" /><circle cx="11" cy="17" r="1.6" /></svg></span>
+            <span class="bottom-label">Func</span>
+        </button>
+        <button class="bottom-item" type="button" id="boosterBottom" data-view-target="booster">
+            <span class="bottom-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3.75c2.78 1.86 4.75 5.16 4.75 8.62 0 4.05-2.39 6.84-4.75 8.13-2.36-1.29-4.75-4.08-4.75-8.13 0-3.46 1.97-6.76 4.75-8.62Z" /><path d="m12.55 7.25-2.25 4.4h1.95l-.9 5.1 2.35-4.4H11.7Z" /></svg></span>
+            <span class="bottom-label">Boost</span>
+        </button>
+        <button class="bottom-item" type="button" id="monitorBottom" data-view-target="monitor">
+            <span class="bottom-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4.5" y="5.75" width="15" height="10.5" rx="2.25" /><path d="M7 12.5h2.2l1.55-3.25 2.5 5 1.85-3.5H17" /><path d="M9.25 19.25h5.5" /></svg></span>
+            <span class="bottom-label">Live</span>
+        </button>
+        <button class="bottom-item" type="button" id="settingsBottom" data-view-target="settings">
+            <span class="bottom-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.75" /><path d="M12 5.25v1.6" /><path d="M12 17.15v1.6" /><path d="m7.23 7.23 1.14 1.14" /><path d="m15.63 15.63 1.14 1.14" /><path d="M5.25 12h1.6" /><path d="M17.15 12h1.6" /><path d="m7.23 16.77 1.14-1.14" /><path d="m15.63 8.37 1.14-1.14" /><circle cx="12" cy="12" r="5.35" /></svg></span>
+            <span class="bottom-label">Cài đặt</span>
+        </button>
+    </nav>
+
+    <!-- ===== JavaScript ===== -->
+    <script>
+        // ===== app.js =====
+        (function() {
+            "use strict";
+
+            // Navigation
+            const sections = {
+                home: document.getElementById("homeSection"),
+                premium: document.getElementById("premiumSection"),
+                booster: document.getElementById("boosterSection"),
+                monitor: document.getElementById("monitorSection"),
+                settings: document.getElementById("setupSection"),
+            };
+
+            const bottomButtons = document.querySelectorAll(".bottom-item");
+            const modalBackdrop = document.getElementById("modalBackdrop");
+            const limitModal = document.getElementById("limitModal");
+
+            function showSection(sectionId) {
+                Object.keys(sections).forEach((key) => {
+                    if (sections[key]) {
+                        sections[key].hidden = key !== sectionId;
+                    }
+                });
+                bottomButtons.forEach((btn) => {
+                    const target = btn.getAttribute("data-view-target");
+                    btn.classList.toggle("is-active", target === sectionId);
+                });
+            }
+
+            bottomButtons.forEach((btn) => {
+                btn.addEventListener("click", function() {
+                    const target = this.getAttribute("data-view-target");
+                    if (target && sections[target]) {
+                        showSection(target);
+                    }
+                });
+            });
+
+            // Function toggles + limit modal
+            const funcToggles = document.querySelectorAll(".func-card .toggle input");
+            let activeFuncCount = 0;
+
+            function updateFuncCount() {
+                activeFuncCount = document.querySelectorAll('.func-card .toggle input:checked').length;
+            }
+
+            funcToggles.forEach((toggle) => {
+                toggle.addEventListener("change", function() {
+                    const card = this.closest(".func-card");
+                    if (this.checked) {
+                        if (activeFuncCount >= 9) {
+                            this.checked = false;
+                            modalBackdrop.classList.add("is-open");
+                            limitModal.classList.add("is-open");
+                            return;
+                        }
+                        card.classList.add("is-on");
+                        activeFuncCount++;
+                    } else {
+                        card.classList.remove("is-on");
+                        activeFuncCount--;
+                    }
+                });
+            });
+
+            // Close modal
+            function closeModal() {
+                modalBackdrop.classList.remove("is-open");
+                limitModal.classList.remove("is-open");
+            }
+            modalBackdrop.addEventListener("click", closeModal);
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") closeModal();
+            });
+
+            // Booster switch
+            const boosterPills = document.querySelectorAll(".booster-pill");
+            const boosterPanels = document.querySelectorAll(".booster-panel");
+
+            boosterPills.forEach((pill) => {
+                pill.addEventListener("click", function() {
+                    const target = this.getAttribute("data-booster-target");
+                    boosterPills.forEach((p) => p.classList.remove("is-active"));
+                    this.classList.add("is-active");
+                    boosterPanels.forEach((panel) => {
+                        panel.classList.toggle("is-active", panel.getAttribute("data-booster-panel") === target);
+                    });
+                });
+            });
+
+            // Sliders: update outputs and preview
+            const sliders = document.querySelectorAll(".tune-slider");
+            sliders.forEach((slider) => {
+                const output = document.querySelector(`output[for="${slider.id}"]`);
+                if (output) {
+                    const updateOutput = () => {
+                        output.textContent = slider.value + "%";
+                        slider.style.setProperty("--value", slider.value);
+                        // Update preview
+                        const profile = slider.getAttribute("data-profile");
+                        const setting = slider.getAttribute("data-setting");
+                        const previewItems = document.querySelectorAll(
+                            `.preview-item[data-preview-profile="${profile}"][data-preview-setting="${setting}"]`
+                        );
+                        previewItems.forEach((item) => {
+                            const valSpan = item.querySelector("[data-preview-value]");
+                            const fillDiv = item.querySelector("[data-preview-fill]");
+                            if (valSpan) valSpan.textContent = slider.value + "%";
+                            if (fillDiv) fillDiv.style.setProperty("--value", slider.value);
+                        });
+                        // Update dial
+                        const previewDial = document.querySelector(
+                            `.booster-preview[data-preview-profile="${profile}"] .preview-dial`
+                        );
+                        const scoreSpan = document.querySelector(
+                            `.booster-preview[data-preview-profile="${profile}"] .preview-score`
+                        );
+                        if (previewDial) {
+                            const total = Array.from(
+                                    document.querySelectorAll(
+                                        `.booster-preview[data-preview-profile="${profile}"] .tune-slider`)
+                                )
+                                .reduce((sum, s) => sum + parseInt(s.value || 0), 0);
+                            const avg = Math.min(100, Math.round(total / 5));
+                            previewDial.style.setProperty("--dial", avg);
+                            if (scoreSpan) scoreSpan.textContent = avg + "%";
+                        }
+                    };
+                    slider.addEventListener("input", updateOutput);
+                    updateOutput();
+                }
+            });
+
+            // Booster Launch buttons
+            document.getElementById("launchFF")?.addEventListener("click", function() {
+                showToast("Đang kích hoạt BOOSTER cho FREE FIRE...");
+            });
+            document.getElementById("launchFFM")?.addEventListener("click", function() {
+                showToast("Đang kích hoạt BOOSTER cho FREE FIRE MAX...");
+            });
+
+            // Toast
+            function showToast(msg) {
+                let toast = document.querySelector(".boost-toast");
+                if (!toast) {
+                    toast = document.createElement("div");
+                    toast.className = "boost-toast";
+                    document.body.appendChild(toast);
+                }
+                toast.textContent = msg;
+                toast.classList.add("show");
+                clearTimeout(toast._hideTimer);
+                toast._hideTimer = setTimeout(() => toast.classList.remove("show"), 2000);
+            }
+
+            // ===== Monitor =====
+            const cpuCanvas = document.getElementById("cpuCanvas");
+            const ramCanvas = document.getElementById("ramCanvas");
+            const ctxCpu = cpuCanvas?.getContext("2d");
+            const ctxRam = ramCanvas?.getContext("2d");
+
+            // Simulate data
+            let cpuData = new Array(60).fill(0);
+            let ramData = new Array(60).fill(0);
+            let frameTimes = [];
+
+            function updateMonitor() {
+                // Simulate CPU (0-100%)
+                const cpu = Math.min(100, Math.max(5, Math.round(Math.random() * 30 + 15 + Math.sin(Date.now() / 1000) * 10)));
+                document.getElementById("mCpu").textContent = cpu;
+                cpuData.push(cpu);
+                if (cpuData.length > 60) cpuData.shift();
+
+                // Simulate FPS
+                const fps = Math.round(60 + Math.random() * 40);
+                document.getElementById("mFps").textContent = fps;
+                const frame = 1000 / fps;
+                document.getElementById("mFrame").textContent = frame.toFixed(1);
+                frameTimes.push(frame);
+                if (frameTimes.length > 60) frameTimes.shift();
+
+                // Simulate RAM
+                const ram = (Math.random() * 2 + 1.2).toFixed(1);
+                document.getElementById("mRam").textContent = ram + " MB";
+                ramData.push(parseFloat(ram));
+                if (ramData.length > 60) ramData.shift();
+
+                drawCpuChart();
+                drawRamChart();
+            }
+
+            function drawCpuChart() {
+                if (!ctxCpu) return;
+                const w = cpuCanvas.width,
+                    h = cpuCanvas.height;
+                ctxCpu.clearRect(0, 0, w, h);
+                ctxCpu.strokeStyle = "#ff3b52";
+                ctxCpu.lineWidth = 2;
+                ctxCpu.beginPath();
+                const step = w / (cpuData.length - 1);
+                cpuData.forEach((v, i) => {
+                    const x = i * step;
+                    const y = h - (v / 100) * h * 0.8 - 10;
+                    i === 0 ? ctxCpu.moveTo(x, y) : ctxCpu.lineTo(x, y);
+                });
+                ctxCpu.stroke();
+                // Fill under
+                ctxCpu.lineTo(w, h);
+                ctxCpu.lineTo(0, h);
+                ctxCpu.closePath();
+                const grad = ctxCpu.createLinearGradient(0, 0, 0, h);
+                grad.addColorStop(0, "rgba(255,59,82,0.3)");
+                grad.addColorStop(1, "rgba(255,59,82,0.02)");
+                ctxCpu.fillStyle = grad;
+                ctxCpu.fill();
+            }
+
+            function drawRamChart() {
+                if (!ctxRam) return;
+                const w = ramCanvas.width,
+                    h = ramCanvas.height;
+                ctxRam.clearRect(0, 0, w, h);
+                ctxRam.strokeStyle = "#ff9aa5";
+                ctxRam.lineWidth = 2;
+                ctxRam.beginPath();
+                const maxRam = Math.max(4, ...ramData);
+                const step = w / (ramData.length - 1);
+                ramData.forEach((v, i) => {
+                    const x = i * step;
+                    const y = h - (v / maxRam) * h * 0.8 - 10;
+                    i === 0 ? ctxRam.moveTo(x, y) : ctxRam.lineTo(x, y);
+                });
+                ctxRam.stroke();
+                ctxRam.lineTo(w, h);
+                ctxRam.lineTo(0, h);
+                ctxRam.closePath();
+                const grad = ctxRam.createLinearGradient(0, 0, 0, h);
+                grad.addColorStop(0, "rgba(255,154,165,0.25)");
+                grad.addColorStop(1, "rgba(255,154,165,0.02)");
+                ctxRam.fillStyle = grad;
+                ctxRam.fill();
+            }
+
+            // Simulate updates
+            setInterval(updateMonitor, 500);
+
+            // Logs/Errors counts
+            let logCount = 0,
+                errCount = 0;
+            const consoleView = document.getElementById("consoleView");
+            const mLogs = document.getElementById("mLogs");
+            const mErrs = document.getElementById("mErrs");
+
+            function addLog(msg, type = "") {
+                const div = document.createElement("div");
+                div.className = "logLine" + (type ? " " + type : "");
+                div.textContent = msg;
+                consoleView.appendChild(div);
+                consoleView.scrollTop = consoleView.scrollHeight;
+                if (type === "error") {
+                    errCount++;
+                    mErrs.textContent = errCount;
+                } else {
+                    logCount++;
+                    mLogs.textContent = logCount;
+                }
+            }
+
+            // Console command
+            document.getElementById("btnExec")?.addEventListener("click", function() {
+                const cmd = document.getElementById("cmd");
+                const code = cmd.value.trim();
+                if (!code) return;
+                try {
+                    const result = eval(code);
+                    addLog("> " + code);
+                    addLog("← " + String(result));
+                } catch (e) {
+                    addLog("> " + code, "error");
+                    addLog("✖ " + e.message, "error");
+                }
+                cmd.value = "";
+            });
+            document.getElementById("cmd")?.addEventListener("keydown", function(e) {
+                if (e.key === "Enter") document.getElementById("btnExec").click();
+            });
+
+            // Clear console
+            document.getElementById("btnClearConsole")?.addEventListener("click", function() {
+                consoleView.innerHTML = "";
+                logCount = 0;
+                errCount = 0;
+                mLogs.textContent = "0";
+                mErrs.textContent = "0";
+            });
+
+            // Other buttons
+            document.getElementById("btnCleanRam")?.addEventListener("click", function() {
+                addLog("🧹 Dọn RAM: Đã giải phóng bộ nhớ tạm.", "warn");
+            });
+            document.getElementById("btnCleanCpu")?.addEventListener("click", function() {
+                addLog("🧹 Dọn CPU: Đã tối ưu tiến trình nền.", "warn");
+            });
+            document.getElementById("btnOptRam")?.addEventListener("click", function() {
+                addLog("⚡ Tối ưu RAM: Đã giảm mức sử dụng.", "warn");
+            });
+            document.getElementById("btnOptCpu")?.addEventListener("click", function() {
+                addLog("⚡ Tối ưu CPU: Đã tăng hiệu suất xử lý.", "warn");
+            });
+            document.getElementById("btnOptFps")?.addEventListener("click", function() {
+                addLog("⚡ Tối ưu FPS: Đã tăng tốc khung hình.", "warn");
+            });
+
+            // Lock button
+            let locked = false;
+            document.getElementById("btnLock")?.addEventListener("click", function() {
+                locked = !locked;
+                this.textContent = locked ? "Lock 120 FPS : ON" : "UnLock 120 FPS : OFF";
+                this.classList.toggle("toggleOn", locked);
+                addLog(locked ? "🔒 Đã khóa 120 FPS." : "🔓 Đã mở khóa 120 FPS.", "warn");
+            });
+
+            // Settings buttons
+            document.getElementById("settings-reset-btn")?.addEventListener("click", function() {
+                if (confirm("Bạn có chắc muốn đặt lại tất cả cấu hình?")) {
+                    addLog("🔄 Đã đặt lại cấu hình hệ thống.", "warn");
+                }
+            });
+            document.getElementById("settings-logout-btn")?.addEventListener("click", function() {
+                if (confirm("Bạn có chắc muốn đăng xuất?")) {
+                    addLog("👋 Đã đăng xuất khỏi hệ thống.", "warn");
+                }
+            });
+
+            // Sound toggle
+            document.getElementById("settings-sound-toggle")?.addEventListener("change", function() {
+                addLog(this.checked ? "🔊 Âm thanh đã bật." : "🔇 Âm thanh đã tắt.", "warn");
+            });
+            document.getElementById("settings-notification-toggle")?.addEventListener("change", function() {
+                addLog(this.checked ? "🔔 Thông báo đã bật." : "🔕 Thông báo đã tắt.", "warn");
+            });
+
+            // Init
+            updateMonitor();
+            showSection("home");
+
+            // Keyboard shortcut: Escape to close modal
+            document.addEventListener("keydown", function(e) {
+                if (e.key === "Escape") closeModal();
+            });
+
+            console.log("ULTRALOCK app loaded.");
+        })();
+
+        // ===== key.js =====
+        // (No code provided)
+
+        // ===== code.js =====
+        // (No code provided)
+
+        // ===== code1.js =====
+        // (No code provided)
+
+        // ===== code2.js =====
+        // (No code provided)
+
+        // ===== code3.js =====
+        // (No code provided)
+
+        // ===== code4.js =====
+        // (No code provided)
+
+        // ===== code5.js =====
+        // (No code provided)
+
+        // ===== code6.js =====
+        // (No code provided)
+    </script>
+</body>
+</html>
